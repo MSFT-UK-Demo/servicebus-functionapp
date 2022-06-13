@@ -169,3 +169,4 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-01-15' = {
     tier: 'Dynamic'
   }
 }
+output hostingPlanName string = hostingPlan.name

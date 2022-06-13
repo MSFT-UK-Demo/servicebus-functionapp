@@ -7,8 +7,9 @@ param serviceBusQueueName string
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
+var servicebusName = 'sb-${serviceBusNamespaceName}-${uniqueString(resourceGroup().id, serviceBusNamespaceName)}'
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
-  name: serviceBusNamespaceName
+  name: servicebusName
   location: location
   sku: {
     name: 'Standard'

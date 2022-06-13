@@ -1,11 +1,12 @@
 
 param location string = resourceGroup().location
 
-module doIt 'archetype/functionapp-servicebus.bicep' = {
+@description('This module deploys a freestanding sample with a servicebus and functionapp together')
+module serviceBusApp 'archetype/servicebus-FunctionApp.bicep' = {
   name: 'demoapp'
   params: {
-    appName: 'myapp6'
-    resNameSeed: 'myproj'
+    appName: 'app'
+    resNameSeed: 'demo'
     location: location
     
     AppGitRepoUrl: 'https://github.com/Gordonby/azure-sample-functionapps.git'
