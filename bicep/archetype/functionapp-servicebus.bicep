@@ -47,10 +47,10 @@ var ServiceBusAppSettings = [
     name: 'ServiceBusQueueName'
     value: servicebus.outputs.serviceBusQueueName
   }
-  {
-    name: 'AzureServicesAuthConnectionString'
-    value: 'RunAs=App;AppId=${fnAppUai.properties.clientId}'
-  }
+  // {
+  //   name: 'AzureServicesAuthConnectionString'
+  //   value: 'RunAs=App;AppId=${fnAppUai.properties.clientId}'
+  // }
 ]
 
 module functionApp '../foundation/functionapp.bicep' = {
@@ -132,7 +132,7 @@ var serviceBusDataReceiver = resourceId('Microsoft.Authorization/roleDefinitions
 resource functionAppToSb 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   name: guid(serviceBusDataReceiver, ServiceBusNameSpaceName, fnAppUai.id)
   properties: {
-    principalId: fnAppUai.properties.principalId
+    principalId: functionApp.outputs.systemAssignedIdentityPrincipalId //fnAppUai.properties.principalId
     roleDefinitionId: serviceBusDataReceiver
   }
 }

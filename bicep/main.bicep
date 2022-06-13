@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 module doIt 'archetype/functionapp-servicebus.bicep' = {
   name: 'demoapp'
   params: {
-    appName: 'myapp5'
+    appName: 'myapp6'
     resNameSeed: 'myproj'
     location: location
     

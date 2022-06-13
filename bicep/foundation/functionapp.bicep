@@ -69,7 +69,7 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
   location: location
   kind: 'functionapp'
   identity: {
-    type: 'UserAssigned'
+    type: 'SystemAssigned, UserAssigned'
     userAssignedIdentities: {
       '${fnAppUai.id}': {}
     }
@@ -84,6 +84,7 @@ resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
 }
 output appUrl string = functionApp.properties.defaultHostName
 output appName string = functionApp.name
+output systemAssignedIdentityPrincipalId string = functionApp.identity.principalId
 
 param deploymentSlotName string = 'staging'
 param repoBranchStaging string = ''
