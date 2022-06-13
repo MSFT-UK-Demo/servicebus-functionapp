@@ -46,6 +46,10 @@ var coreAppSettings = [
     name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
   }
+  {
+    name: 'PROJECT'
+    value: repoPath
+  }
 ]
 
 var siteConfig = {
@@ -135,6 +139,7 @@ resource webAppLogging 'Microsoft.Web/sites/config@2021-02-01' = {
 }
 
 param repoUrl string = ''
+param repoPath string = ''
 param repoBranchProduction string = 'main'
 resource codeDeploy 'Microsoft.Web/sites/sourcecontrols@2021-01-15' = if (!empty(repoUrl) && !empty(repoBranchProduction)) {
   parent: functionApp

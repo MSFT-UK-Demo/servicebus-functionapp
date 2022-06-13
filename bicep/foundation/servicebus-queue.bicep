@@ -7,7 +7,7 @@ param serviceBusQueueName string
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2017-04-01' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
   name: serviceBusNamespaceName
   location: location
   sku: {
@@ -16,7 +16,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2017-04-01' = {
   properties: {}
 }
 
-resource serviceBusQueue 'Microsoft.ServiceBus/namespaces/queues@2017-04-01' = {
+resource serviceBusQueue 'Microsoft.ServiceBus/namespaces/queues@2021-11-01' = {
   parent: serviceBusNamespace
   name: serviceBusQueueName
   properties: {
@@ -36,3 +36,4 @@ resource serviceBusQueue 'Microsoft.ServiceBus/namespaces/queues@2017-04-01' = {
 
 output serviceBusNamespace string =  serviceBusNamespace.name
 output serviceBusFqdn string = '${serviceBusNamespace.name}.servicebus.windows.net'
+output serviceBusQueueName string = serviceBusQueue.name

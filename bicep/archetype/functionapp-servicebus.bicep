@@ -33,6 +33,7 @@ resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' 
 // --------------------Function App-------------------
 @description('The full publicly accessible external Git(Hub) repo url')
 param AppGitRepoUrl string
+param AppGitRepoPath string = ''
 
 param AppGitRepoProdBranch string = 'main'
 param AppGitRepoStagingBranch string = ''
@@ -41,6 +42,14 @@ var ServiceBusAppSettings = [
   {
     name: 'ServiceBusConnection__fullyQualifiedNamespace'
     value: servicebus.outputs.serviceBusFqdn
+  }
+  {
+    name: 'ServiceBusQueueName'
+    value: servicebus.outputs.serviceBusQueueName
+  }
+  {
+    name: 'AzureServicesAuthConnectionString'
+    value: 'RunAs=App;AppId=${fnAppUai.properties.clientId}'
   }
 ]
 
@@ -53,6 +62,7 @@ module functionApp '../foundation/functionapp.bicep' = {
     AppInsightsName: appInsights.outputs.name
     fnAppIdentityName: fnAppUai.name
     repoUrl: AppGitRepoUrl
+    repoPath: AppGitRepoPath
     repoBranchProduction: AppGitRepoProdBranch
     repoBranchStaging: AppGitRepoStagingBranch
     deploymentSlotName: ''
