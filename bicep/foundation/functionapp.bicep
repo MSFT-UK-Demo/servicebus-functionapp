@@ -16,7 +16,9 @@ param RuntimeVersion string = '~4'
 
 param AppInsightsName string
 param additionalAppSettings array = []
-param fnAppIdentityName string = 'id-app-${appName}-${uniqueString(resourceGroup().id, appName)}'
+
+@description('An optional, additional User Assigned Identity name that can be leveraged for other auth scenarios')
+param fnAppIdentityName string = ''
 
 resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: AppInsightsName
@@ -64,22 +66,28 @@ var siteConfig = {
   ] : []
 }
 
+var identityJustSystemAssigned = {
+  type: 'SystemAssigned'
+}
+
+var identityUserAndSystemAssigned = {
+  type: 'SystemAssigned, UserAssigned' 
+  userAssignedIdentities: {
+    '${fnAppUai.id}': {}
+  }
+}
+
 resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
   name: webAppName
   location: location
   kind: 'functionapp'
-  identity: {
-    type: 'SystemAssigned, UserAssigned'
-    userAssignedIdentities: {
-      '${fnAppUai.id}': {}
-    }
-  }
+  identity: !empty(fnAppIdentityName) ? identityUserAndSystemAssigned : identityJustSystemAssigned
   properties: {
     httpsOnly: true
     serverFarmId: hostingPlan.id
     clientAffinityEnabled: true
     siteConfig: siteConfig
-    keyVaultReferenceIdentity: fnAppUai.id
+    keyVaultReferenceIdentity: !empty(fnAppIdentityName) ? fnAppUai.id : 'SystemAssigned'
   }
 }
 output appUrl string = functionApp.properties.defaultHostName
@@ -108,7 +116,7 @@ param repoBranchStaging string = ''
 //   }
 // }
 
-resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (!empty(fnAppIdentityName)) {
   name: fnAppIdentityName
 }
 
